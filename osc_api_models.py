@@ -48,8 +48,8 @@ class OSCPhoto:
         photo = OSCPhoto()
         if 'lat' in json:
             photo.latitude = json['lat']
-        if 'lon' in json:
-            photo.longitude = json['lon']
+        if 'lng' in json:
+            photo.longitude = json['lng']
         if 'sequence_index' in json:
             photo.sequence_index = json['sequence_index']
         if 'id' in json:

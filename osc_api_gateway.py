@@ -6,6 +6,7 @@ import hashlib
 import os.path
 import shutil
 import logging
+import urllib.request
 from typing import Tuple, Optional, List
 
 import requests
@@ -72,6 +73,10 @@ class OSCApiMethods:
         return _osc_url(env) + '/' + _version() + '/sequence/photo-list/'
 
     @classmethod
+    def nearby_photo_list(cls, env: OSCAPISubDomain) -> str:
+        return _osc_url(env) + '/' + _version() + '/list/nearby-photos/'
+
+    @classmethod
     def video_upload(cls, env: OSCAPISubDomain) -> str:
         """this method returns video upload URL"""
         return _upload_url(env, 'video')
@@ -95,6 +100,10 @@ class OSCApiMethods:
     def finish_upload(cls, env: OSCAPISubDomain) -> str:
         """this method returns a finish upload url"""
         return _osc_url(env) + '/' + _version() + '/sequence/finished-uploading/'
+
+    @classmethod
+    def photo_query(cls, env: OSCAPISubDomain, storage_link: str) -> str:
+        return _osc_url(env) + '/' + storage_link
 
 
 class OSCApi:
@@ -201,6 +210,35 @@ class OSCApi:
             return None, ex
 
         return user, None
+
+    def get_sequence_by_coordinates(self, id: int):
+        parameters = {"id": f"{id}"}
+        login_url = OSCApiMethods.sequence_details(self.environment)
+        response = requests.post(url=login_url, data=parameters)
+        json_response = response.json()
+        return json_response
+
+    def get_nearby_photos(self, lat: float, long: float, radius: int = 5):
+        parameters = {
+            "lat": lat,
+            "lng": long,
+            "radius": radius
+        }
+        login_url = OSCApiMethods.nearby_photo_list(self.environment)
+        response = requests.post(url=login_url, data=parameters)
+        json_response = response.json()
+        status = json_response["status"]
+        osc_photos = [OSCPhoto.photo_from_json(item)
+                      for item in json_response["currentPageItems"]]
+        return osc_photos, status
+
+    def download_photo(self, osc_photo: OSCPhoto, out_name: str):
+        query_link = OSCApiMethods.photo_query(self.environment, osc_photo.image_name)
+        try:
+            _, result = urllib.request.urlretrieve(query_link, out_name)
+            return True
+        except:
+            return False
 
     def get_photos(self, sequence_id: int) -> Tuple[List[OSCPhoto], Exception]:
         """this method will return a list of photo objects for a sequence id"""

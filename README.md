@@ -152,3 +152,35 @@ docker run -Pit osc-up osc_tools.py
 docker run -Pit --mount type=bind,source="$(pwd)",target=/opt/osc osc-up /opt/osc/osc_tools.py
 ```
 The 'images' directory in the repo will be available in the container at /opt/osc/images
+
+## 3. Downloading OpenStreetMap and OpenStreetCam data
+
+Provide a list of all coordinates which should be searched for as lat-long pairs in 
+a `.txt` file like this:
+
+```
+35.225784 -114.295925
+35.225527 -114.289817
+35.225294 -114.286065
+35.225285 -114.281114
+35.224792 -114.275691
+```
+
+Then, run the provided script:
+```
+python3 create_custom_database.py -f my_coordinates.txt -o downloads
+```
+
+This will create a new directory *downloads* where it saves a `database.csv` and 
+all downloaded images like this:
+
+|     | coordinates              | photos                                                                     | name                          | tiger:county   | oneway   | tiger:name_type   | adot_name                     | ref   | highway     | source   |   lanes | tiger:name_base   | tiger:reviewed   | tiger:cfcc   | maxspeed   |
+|----:|:-------------------------|:---------------------------------------------------------------------------|:------------------------------|:---------------|:---------|:------------------|:------------------------------|:------|:------------|:---------|--------:|:------------------|:-----------------|:-------------|:-----------|
+|   0 | [35.224792, -114.275691] | ['downloads/photos/-114.275691_35.224792/982415_1cc50_27.jpg']             | Bullhead City-Kingman Highway | nan            | yes      | nan               | Bullhead City-Kingman Highway | AZ 68 | trunk       | survey   |       2 | nan               | nan              | nan          | 65 mph     |
+|   1 | [35.225285, -114.281114] | ['downloads/photos/-114.281114_35.225285/1250637_ea38d_5b26725fbf35c.jpg'] | Bullhead City-Kingman Highway | nan            | yes      | nan               | Bullhead City-Kingman Highway | AZ 68 | trunk       | survey   |       2 | nan               | nan              | nan          | 65 mph     |
+|   2 | [35.225527, -114.289817] | ['downloads/photos/-114.289817_35.225527/982415_0fa40_29.jpg']             | Bullhead City-Kingman Highway | nan            | yes      | nan               | Bullhead City-Kingman Highway | AZ 68 | trunk       | survey   |       2 | nan               | nan              | nan          | 65 mph     |
+|   3 | [35.225784, -114.295925] | ['downloads/photos/-114.295925_35.225784/982415_0fa40_8.jpg']              | Bullhead City-Kingman Highway | nan            | yes      | nan               | Bullhead City-Kingman Highway | AZ 68 | trunk       | survey   |       2 | nan               | nan              | nan          | 65 mph     |
+|   4 | [35.225294, -114.286065] | ['downloads/photos/-114.286065_35.225294/982415_0fa40_42.jpg']             | Cibola Road                   | Mohave, AZ     | nan      | Rd                | nan                           | nan   | residential | nan      |     nan | Cibola            | no               | A41          | nan        |
+
+It automatically retrieves all available attributes for the given coordinates.
+
