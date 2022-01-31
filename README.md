@@ -155,6 +155,15 @@ The 'images' directory in the repo will be available in the container at /opt/os
 
 ## 3. Downloading OpenStreetMap and OpenStreetCam data
 
+**Minimally tested with _test_coordinates.txt_**
+
+Create the environment:
+```
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
 Provide a list of all coordinates which should be searched for as lat-long pairs in 
 a `.txt` file like this:
 
@@ -171,8 +180,8 @@ Then, run the provided script:
 python3 create_custom_database.py -f my_coordinates.txt -o downloads
 ```
 
-This will create a new directory *downloads* where it saves a `database.csv` and 
-all downloaded images like this:
+This script can take a while (since the public overpass api has limited bandwith).
+This will create a new directory *downloads* where it saves a `database.csv` and all downloaded images like this:
 
 |     | coordinates              | photos                                                                     | name                          | tiger:county   | oneway   | tiger:name_type   | adot_name                     | ref   | highway     | source   |   lanes | tiger:name_base   | tiger:reviewed   | tiger:cfcc   | maxspeed   |
 |----:|:-------------------------|:---------------------------------------------------------------------------|:------------------------------|:---------------|:---------|:------------------|:------------------------------|:------|:------------|:---------|--------:|:------------------|:-----------------|:-------------|:-----------|
